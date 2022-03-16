@@ -12,7 +12,9 @@ function Login(props) {
         username: "",
         password:""
     })
-    const [user, setUser] = useState("")
+    const [user, setUser] = useState({
+        isAuth : false
+    })
 
     // CHANGE HANDLERS
 
@@ -40,6 +42,7 @@ function Login(props) {
               }
             });
         const userData = await res2.json()
+        userData.isAuth = true
         console.log(userData)
         setUser(userData)
         console.log(user)
