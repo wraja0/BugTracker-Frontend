@@ -34,7 +34,7 @@ function Newbugform() {
     console.log("change")
     // IMPORT STATE 
     const location = useLocation();
-    const user = location.state
+    const user = location.state.user
     // SET STATES
     const [allUserData, setAllUserData] = useState("")
     const [bugForm, setBugForm] = useState({
@@ -49,7 +49,7 @@ function Newbugform() {
     }
     const handleSubmit = (event)=> {
         event.preventDefault()
-        createBug(bugForm)
+        createBug(bugForm,masterTests)
         setBugForm({
             ...bugForm,
             devsAssigned: "",
@@ -57,8 +57,8 @@ function Newbugform() {
             tests: ""
         })
     }
-    const createBug = async(bug) => { 
-        const res = await fetch(URL + "/login", {
+    const createBug = async(bug,allTests) => { 
+        const res = await fetch(URL + "/generateLoginToken", {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -79,6 +79,7 @@ function Newbugform() {
             body: JSON.stringify({
                 dev: bug.devsAssigned,
                 codeBase: bug.codeBase,
+                tests: allTests
             })
             });
         const newBugData = await res2.json()
@@ -87,7 +88,7 @@ function Newbugform() {
     // Retreive all userdata to use for select buttons 
     useEffect( ()=> {
         const getAllUserData = async()=> {
-            const res = await fetch(URL + "/login", {
+            const res = await fetch(URL + "/generateLoginToken", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json"

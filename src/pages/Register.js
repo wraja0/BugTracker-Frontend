@@ -1,7 +1,11 @@
+// Import styles
 import "../styles/App.css"
+// Import Hooks
 import { useState } from "react";
-const URL = 'http://localhost:4000'
-function Register() {
+
+function Register(props) {
+  // Set backend API Address 
+  const URL = props.URL
   // Set States
   const [user, setUser] = useState("")
   const [registerForm, setRegisterForm] = useState({
@@ -10,7 +14,7 @@ function Register() {
     class: ""
   })
   const registerUser = async(data)=> {
-    const res = await fetch(URL + "/register", {
+    const res = await fetch(URL + "/generateRegisterToken", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +26,8 @@ function Register() {
         })
     });
     const token = await res.json();
-    const res2 = await fetch(URL + "/user/create", {
+    console.log(token)
+    const res2 = await fetch(URL + "/user/register", {
       method: "post",
       headers: {
         "Content-Type": "application/json",

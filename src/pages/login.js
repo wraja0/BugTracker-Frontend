@@ -1,28 +1,28 @@
 //IMPORTS
+// IMPORT STYLES
 import "../styles/App.css"
-import { useState, createContext } from "react"
+// IMPORT HOOKS
+import { useState } from "react"
+// IMPORT ROUTER HOOKS
 import { Navigate} from "react-router"
-import { useLocation } from "react-router"
-const URL = 'http://localhost:4000'
 function Login(props) {
-    const userContext = createContext();
-    const location= useLocation();
-    // STATES
+    // SET BACKEND API ADDRESS
+    const URL = props.URL
+    // LOGIN FORM STATE
     const [loginForm, setLoginForm] = useState({
         username: "",
         password:""
     })
-    const [user, setUser] = useState({
-        isAuth : false
-    })
-
-    // CHANGE HANDLERS
-
+    // TOKEN STATE 
+    const [tokenState,setTokenState] = useState({})
+    // CHANGE LOGIN FORM HANDLER
     const handleChange = (event,)=> {
         setLoginForm({...loginForm, [event.target.name]: event.target.value })
     }
+    // GET LOGIN TOKEN
     const handleLogin = async (data)=> { 
-        const res = await fetch(URL + "/login", {
+        // SIGN TOKEN
+        const res = await fetch(URL + "/generateLoginToken", {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -33,20 +33,9 @@ function Login(props) {
             })
         });
         const token = await res.json();
-        console.log(token.accessToken);
-        const res2 = await fetch(URL + "/user", {
-            method: "get",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.accessToken}`
-              }
-            });
-        const userData = await res2.json()
-        userData.isAuth = true
-        console.log(userData)
-        setUser(userData)
-        console.log(user)
+        setTokenState(token)
     }
+    // SUBMIT LOGIN FORM HANDLER 
     const handleSubmit = (event)=> {
         event.preventDefault()
         handleLogin(loginForm)
@@ -56,8 +45,8 @@ function Login(props) {
             password: ""
         })
     }
-    // COMPONENT
-    if (!user.username) return (
+    // IF USER HAS NOT GENERATED AN ACCESS TOKEN VIA THE LOGIN BUTTON 
+    if (!tokenState.accessToken) return (
         <div>
             <form onSubmit={handleSubmit}>
                 <input
@@ -79,7 +68,8 @@ function Login(props) {
             </form>
         </div>
     )
-    else return <Navigate to={'/home'} state={user} />
+    // REDIRECT FOR WHEN AN ACCESS TOKEN HAS BEEN GENERATED 
+    else return <Navigate to={'/home'} state={{URL:URL,token:tokenState}} />
 
 }
 export default Login;
