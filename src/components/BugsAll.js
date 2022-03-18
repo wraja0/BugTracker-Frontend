@@ -1,51 +1,43 @@
+// IMPORT HOOKS
 import { useState, useEffect } from "react";
+// IMPORT ROUTER HOOKS
 import { Outlet, useLocation } from "react-router"
+// IMPORT NAVIGATION 
 import { Link, } from 'react-router-dom';
 const URL = 'http://localhost:4000'
 
 function BugsAll() {
+    // DESTRUCTURE PASSED STATE
     const location = useLocation();
-    const user = location.state.user
-    const bugQueue = user.bugsQue
+    const URL = location.state.URL
+    const token = location.state.token
+    // SET BUG QUE STATE
     const [queState,setQueState] = useState("")
     useEffect ( ()=> {
+        // FETCH AN ARRAY OF ALL BUGS AND MATCHING TEST DATA
         const fetchBug =async()=> {
-            const res= await fetch(URL+'/login', {
-                method: 'post', 
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    password: user.password
-                })
-            })
-            const token = await res.json();
             console.log(`yer token here ${JSON.stringify(token)}`)
-            const res2 = await fetch(URL+ '/bugs', {
-                method: 'post',
+            const res = await fetch(URL+ '/bugs', {
+                method: 'get',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token.accessToken}`
-                },
-                body: JSON.stringify({
-                    ids: bugQueue
-                })
+                }
             })
-            const bugData = await res2.json();
-            console.log(bugData)
+
+            const bugData = await res.json();
+            // ARRAY OF FETCHED BUGS
             const newData = await bugData.bugQue
             const testData = await bugData.testArr
-            console.log(testData)
-            console.log(newData)
+            // ARRAY OF AN ARRAY OF ALL TESTS WITH EACH LARGER ARRAY MAPPING TO ITS RELEVANT BUG
+            // MAP ALL FETCHED BUGS WITH A LINK TO THE BUGS PAGE
             const bugQueues =newData.map((data,index)=> {
-            
                 return (
-                        <Link key={index} state={{user:user,bug:data.codeBase,tests:testData[index]}} to={'bugview'}> Bug # {index+1}</Link>
+                        <Link key={index} state={{bug:data.codeBase,tests:testData[index]}} to={'bugview'}> Bug # {index+1}</Link>
                 )
             })
+            // S
             setQueState(bugQueues)
-            console.log(bugQueues)
         }
         fetchBug()
         }, [])
