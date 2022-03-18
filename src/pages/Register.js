@@ -27,7 +27,7 @@ function Register(props) {
     });
     const token = await res.json();
     console.log(token)
-    const res2 = await fetch(URL + "/user/register", {
+    const res2 = await fetch(URL + "/register", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
