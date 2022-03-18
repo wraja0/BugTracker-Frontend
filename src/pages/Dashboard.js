@@ -31,7 +31,6 @@ function Dashboard() {
   }, [])
   // AGGREGATE DATA TO BE PASSED 
   const data = {
-    user: user,
     URL: URL,
     token: tokenState
   } 
@@ -52,7 +51,7 @@ function Dashboard() {
     </div>
   )}
   // RENDER WHEN AN AUTHENTICATED USER IS A MANAGER
-  if (data.user.class == 'manager') {return (
+  if (user.class == 'manager') {return (
     <div>
       <h1>Dashboard</h1>
       <h2>Welcome {user.username}</h2>

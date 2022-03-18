@@ -1,12 +1,29 @@
+// IMPORT HOOKS
 import { useState } from "react"
-import { useLocation } from "react-router";
 import {useEffect} from 'react'
-const URL = 'http://localhost:4000'
-
+// IMPORT LOCATION
+import { useLocation } from "react-router";
 function Newbugform() {
-    // For the multiple test inputs
-    const [masterTests, setMasterTest] = useState([])
+    // DESTRUCTURE PASSED STATE DATA
+    const location = useLocation();
+    const token = location.state.token
+    const URL  = location.state.URL
+    // SET STATES
+    const [user, setUser] = useState({})
+    const [allUserData, setAllUserData] = useState("")
+    const [bugForm, setBugForm] = useState({
+        devsAssigned: "",
+        codeBase: "",
+        tests: "",
+    })
+    // SETUP MASTERTESTS DATA TO BE SENT TO BACKEND API FROM EACH TESTINPUT COMPONENT 
+    const [masterTests, setMasterTests] = useState()
+    // A TEST ARRAY TO MAP A TESTINPUT COMPONENT NO DATA NEEDED FOR EMPTY INPUTS SO I HAVE SOME NONSENSE HERE
+    const [testArr,setTestArr] = useState(["this is prob not what you want to do here"])
+
+    // SETUP TESTS INPUT COMPONENT 
     function Testinput(props){ 
+        // INPUT STATE FOR CHILD COMPONENET 
         const [test,setTest] = useState({
             name: props.name,
             counter: props.index
@@ -18,8 +35,9 @@ function Newbugform() {
                 body: event.target.value,
                 counter: props.index
             })
+            // APPEND INPUT TO MASTERTEST ARRAY AND UPDATE STATE
             masterTests[props.index] = {body:event.target.value,name:props.name}
-            setMasterTest(masterTests)
+            setMasterTests(masterTests)
         }
         return (
             <input
@@ -31,45 +49,18 @@ function Newbugform() {
              />
         )
     }
-    console.log("change")
-    // IMPORT STATE 
-    const location = useLocation();
-    const user = location.state.user
-    // SET STATES
-    const [allUserData, setAllUserData] = useState("")
-    const [bugForm, setBugForm] = useState({
-        devsAssigned: "",
-        codeBase: "",
-        tests: "",
-    })
-    const [testCount, setTestCount] = useState(1)
-    // Handlers
+    // HANDLE INPUT CHANGE FOR PARENT COMPONENET 
     const handleChange = (event)=> {
         setBugForm({...bugForm, [event.target.name]: event.target.value })
     }
-    const handleSubmit = (event)=> {
+    // HANDLE CHANGE FOR ADD TEST BUTTON
+    const addTest = (event)=> {
         event.preventDefault()
-        createBug(bugForm,masterTests)
-        setBugForm({
-            ...bugForm,
-            devsAssigned: "",
-            codeBase: "",
-            tests: ""
-        })
+        setTestArr([...testArr,'this is prob not what you want  to do here' ])
+
     }
-    const createBug = async(bug,allTests) => { 
-        const res = await fetch(URL + "/generateLoginToken", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: user.username,
-            password: user.password,
-            })
-        });
-        const token = await res.json();
-        console.log(token)
+    // SEND NEW BUG CREATION REQUEST TO BACKEND API
+    const createBug = async(bug,allTests) => {
         const res2 = await fetch(URL + "/bugs/create", {
             method: "post",
             headers: {
@@ -85,21 +76,38 @@ function Newbugform() {
         const newBugData = await res2.json()
         console.log(newBugData)
     }
-    // Retreive all userdata to use for select buttons 
+    // HANDLE CREATE BUG FORM SUBMISSIONS
+    const handleSubmit = (event)=> {
+        event.preventDefault()
+        
+        createBug(bugForm,masterTests)
+        setBugForm({
+            ...bugForm,
+            devsAssigned: "",
+            codeBase: "",
+            tests: ""
+        })
+    }
+    // MAP TESTARR TO TESTINPUT COMPONENT 
+    const mappedTests = testArr.map((data,index)=> {
+        const name = 'test'+index
+         return <Testinput name={name} key={index} index={index}/>
+     })
+    // RETREIVE ALL USERDATA AND PERSONAL USER DATA
     useEffect( ()=> {
-        const getAllUserData = async()=> {
-            const res = await fetch(URL + "/generateLoginToken", {
-                method: "post",
+        const getPersonalUserData = async()=> {
+            const res = await fetch(URL + "/user/login", {
+                method: "get",
                 headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    password: user.password
-                })
-            })
-            const token= await res.json();
-            const res2 = await fetch(URL + '/user/devs', {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token.accessToken}`
+                }
+              });
+            const userData = await res.json()
+            setUser(userData)
+            }
+        const getAllUserData = async()=> {
+            const res2 = await fetch(URL + '/user/allDevs', {
                 method: "get",
                 headers: {
                     "Content-Type" : "application/json",
@@ -118,20 +126,8 @@ function Newbugform() {
             setAllUserData(allUsers)
         }
         getAllUserData();
+        getPersonalUserData();
     }, [])
-    const [testArr,setTestArr] = useState(["this is prob not what you want to do here"]
-    )
-    const addTest = (event)=> {
-        event.preventDefault()
-        setTestCount(testCount +1)
-        setTestArr([...testArr,'this is prob not what you want  to do here' ])
-
-    }
-    const mappedTests = testArr.map((data,index)=> {
-        const name = 'test'+index
-         return <Testinput name={name} key={index} index={index}/>
-     })
-    console.log(allUserData)
     return (
         <div >
             <h3> New Bug form</h3>
