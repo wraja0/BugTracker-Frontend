@@ -25,7 +25,7 @@ function App() {
         {/* DASHBOARD ROUTE */}
         <Route path ="/home" element={<Dashboard />} >
           <Route path="queue" element={<Userqueue />} >
-            <Route path="bugview" element={<Bugview />} />
+          <Route path="bugview" element={<Bugview />} />
           </Route>
           <Route path="cleared" element={<Cleared />} />
           <Route path="viewallbugs" element={<BugsAll />} >
