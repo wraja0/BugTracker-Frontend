@@ -16,11 +16,16 @@ function Newbugform() {
         codeBase: "",
         tests: "",
     })
-    // SETUP MASTERTESTS DATA TO BE SENT TO BACKEND API FROM EACH TESTINPUT COMPONENT 
-    const [masterTests, setMasterTests] = useState()
+    // SETUP MASTERTESTS DATA TO BE SENT TO BACKEND FROM EACH TESTINPUT COMPONENT WHICH IS MAPPED OUT BASED ON THE TESTARR STATE
+    const [masterTests, setMasterTests] = useState([])
     // A TEST ARRAY TO MAP A TESTINPUT COMPONENT NO DATA NEEDED FOR EMPTY INPUTS SO I HAVE SOME NONSENSE HERE
-    const [testArr,setTestArr] = useState(["this is prob not what you want to do here"])
+    const [testArr,setTestArr] = useState(["0"])
+     // HANDLE CHANGE FOR ADD TEST BUTTON
+     const addTest = (event)=> {
+        event.preventDefault()
+        setTestArr([...testArr,testArr.length ])
 
+    }
     // SETUP TESTS INPUT COMPONENT 
     function Testinput(props){ 
         // INPUT STATE FOR CHILD COMPONENET 
@@ -28,6 +33,7 @@ function Newbugform() {
             name: props.name,
             counter: props.index
         })
+        // HANDLECHANGE FUNCTION FOR EACH INPUT COMPONENT AND UPDATES MASTERTEST STATE
         const handleChange = (event)=> {
             setTest({
                 ...Testinput,
@@ -37,6 +43,7 @@ function Newbugform() {
             })
             // APPEND INPUT TO MASTERTEST ARRAY AND UPDATE STATE
             masterTests[props.index] = {body:event.target.value,name:props.name}
+            console.log(masterTests)
             setMasterTests(masterTests)
         }
         return (
@@ -49,15 +56,26 @@ function Newbugform() {
              />
         )
     }
-    // HANDLE INPUT CHANGE FOR PARENT COMPONENET 
+    // MAP TESTARR TO TESTINPUT COMPONENT 
+    const mappedTests = testArr.map((data,index)=> {
+        const name = 'test'+ index
+        return <Testinput name={name} key={index} index={index}/>
+    })
+    // HANDLE INPUT CHANGE FOR NEW BUG FORM
     const handleChange = (event)=> {
         setBugForm({...bugForm, [event.target.name]: event.target.value })
     }
-    // HANDLE CHANGE FOR ADD TEST BUTTON
-    const addTest = (event)=> {
+    // HANDLE CREATE BUG FORM SUBMISSIONS
+    const handleSubmit = (event)=> {
         event.preventDefault()
-        setTestArr([...testArr,'this is prob not what you want  to do here' ])
-
+        console.log(masterTests)
+        createBug(bugForm,masterTests)
+        setBugForm({
+            ...bugForm,
+            devsAssigned: "",
+            codeBase: "",
+            tests: ""
+        })
     }
     // SEND NEW BUG CREATION REQUEST TO BACKEND API
     const createBug = async(bug,allTests) => {
@@ -76,23 +94,6 @@ function Newbugform() {
         const newBugData = await res2.json()
         console.log(newBugData)
     }
-    // HANDLE CREATE BUG FORM SUBMISSIONS
-    const handleSubmit = (event)=> {
-        event.preventDefault()
-        
-        createBug(bugForm,masterTests)
-        setBugForm({
-            ...bugForm,
-            devsAssigned: "",
-            codeBase: "",
-            tests: ""
-        })
-    }
-    // MAP TESTARR TO TESTINPUT COMPONENT 
-    const mappedTests = testArr.map((data,index)=> {
-        const name = 'test'+index
-         return <Testinput name={name} key={index} index={index}/>
-     })
     // RETREIVE ALL USERDATA AND PERSONAL USER DATA
     useEffect( ()=> {
         const getPersonalUserData = async()=> {
