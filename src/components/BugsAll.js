@@ -1,11 +1,10 @@
+import Bugview from "./Bugview"
 // IMPORT HOOKS
 import { useState, useEffect } from "react";
 // IMPORT ROUTER HOOKS
 import { Outlet, useLocation } from "react-router"
 // IMPORT NAVIGATION 
 import { Link, } from 'react-router-dom';
-const URL = 'http://localhost:4000'
-
 function BugsAll() {
     // DESTRUCTURE PASSED STATE
     const location = useLocation();
@@ -13,41 +12,68 @@ function BugsAll() {
     const token = location.state.token
     // SET BUG QUE STATE
     const [queState,setQueState] = useState("")
+    // SET BUG BUG SELECTOR INPUT STATE
+    const [selectorState,setSelectorState] = useState("")
+    const [currentBug,setCurrentBug] = useState(0)
     useEffect ( ()=> {
         // FETCH AN ARRAY OF ALL BUGS AND MATCHING TEST DATA
-        const fetchBug =async()=> {
-            console.log(`yer token here ${JSON.stringify(token)}`)
-            const res = await fetch(URL+ '/bugs', {
+        const fetchCode =async()=> {
+            const res = await fetch(URL+ '/user/login', {
                 method: 'get',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token.accessToken}`
                 }
             })
-
-            const bugData = await res.json();
+            const userData = await res.json();
             // ARRAY OF FETCHED BUGS
-            const newData = await bugData.bugQue
-            const testData = await bugData.testArr
-            // ARRAY OF AN ARRAY OF ALL TESTS WITH EACH LARGER ARRAY MAPPING TO ITS RELEVANT BUG
-            // MAP ALL FETCHED BUGS WITH A LINK TO THE BUGS PAGE
-            const bugQueues =newData.map((data,index)=> {
+            const bugque = userData.bugsQue
+            const mappedBugQue =bugque.map((data,index)=> {
                 return (
-                        <Link key={index} state={{bug:data.codeBase,tests:testData[index]}} to={'bugview'}> Bug # {index+1}</Link>
+                        <Bugview key={index} URL={URL} token={token} bug={data} />
                 )
             })
-            // S
-            setQueState(bugQueues)
+            setQueState(mappedBugQue)
+            const mappedSelectors = bugque.map((data,index)=>{
+                return (
+                    <option value={index}>Bug # {index +1} </option>
+                )
+            })
+            setSelectorState(mappedSelectors)
         }
-        fetchBug()
-        }, [])
+        // REQUEST TO LOGIN USING ACCESSTOKEN AND SETU USER DATA
+        const checkLogin = async()=> {
+            const res = await fetch(URL +'/user/login', {
+                method:'get',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token.accessToken}`
+                }
+            })
+            const userData = res.json();
+        }
+        checkLogin();
+        fetchCode();
+        },[]
+    )
+    const handleChange = (event)=> {
+        [event.target.name]= event.target.value
+        setCurrentBug(event.target.value)
+
+    }
+        
     return (
         <div>
             All Bugs
-            <nav>
-            {queState}
-            </nav>
-            <Outlet />
+            <form>
+                <label> Select Bug : 
+                    <select name='Bugqueue' onChange={handleChange}>
+                        {selectorState}
+                    </select>
+                </label>
+            </form>
+            {queState[currentBug]}
+            
         </div>
     )
 }

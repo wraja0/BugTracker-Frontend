@@ -29,7 +29,7 @@ function App() {
           </Route>
           <Route path="cleared" element={<Cleared />} />
           <Route path="viewallbugs" element={<BugsAll />} >
-            <Route path="bugview" element={<Bugview />} />
+            <Route path="bugview/:index" element={<Bugview />} />
           </Route>
           <Route path="assignbug" element={<Newbugform />} />
         </Route>

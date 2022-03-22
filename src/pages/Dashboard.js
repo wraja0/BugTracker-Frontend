@@ -15,7 +15,7 @@ function Dashboard() {
   const [user, setUser] = useState({})
   // AUTHENTICATE TOKEN
   useEffect(()=> {
-    const authenticateToken = async()=> {
+    const checkLogin = async()=> {
       const res = await fetch(URL + "/user/login", {
         method: "get",
         headers: {
@@ -27,7 +27,7 @@ function Dashboard() {
       // SET USER STATE TO USE DATA
       setUser(userData)
     }
-    authenticateToken()
+    checkLogin()
   }, [])
   // AGGREGATE DATA TO BE PASSED 
   const data = {
