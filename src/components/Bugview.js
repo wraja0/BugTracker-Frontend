@@ -31,6 +31,7 @@ function Bugview(props) {
                     id: data
                 })})
             const bugData = await res.json()
+            console.log(bugData)
             const bugBodyData = await bugData.bug.codeBase
             const tests = await bugData.tests
             setBugState(bugBodyData)
@@ -63,6 +64,7 @@ function Bugview(props) {
             ON
             value={bugState} />
             {mappedTests}
+            <p>Assigned Users : {}</p>
         </div>
     )
 }

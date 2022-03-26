@@ -40,7 +40,7 @@ function Dashboard() {
   }
   // RENDER WHEN AN AUTHENTICATED USER IS A DEVELOPER
   if (user.class == 'dev') {return (
-    <div>
+    <div class="dashboard">
       <h1> {user.class} Dashboard</h1>
       <h2>Welcome {user.username}</h2>
       <nav>
@@ -52,7 +52,7 @@ function Dashboard() {
   )}
   // RENDER WHEN AN AUTHENTICATED USER IS A MANAGER
   if (user.class == 'manager') {return (
-    <div>
+    <div class="dashboard">
       <h1>Dashboard</h1>
       <h2>Welcome {user.username}</h2>
       <nav>

@@ -29,6 +29,7 @@ function BugsAll() {
             // ARRAY OF FETCHED BUGS
             const bugque = userData.bugsQue
             const mappedBugQue =bugque.map((data,index)=> {
+                console.log(data)
                 return (
                         <Bugview key={index} URL={URL} token={token} bug={data} />
                 )
@@ -36,7 +37,7 @@ function BugsAll() {
             setQueState(mappedBugQue)
             const mappedSelectors = bugque.map((data,index)=>{
                 return (
-                    <option value={index}>Bug # {index +1} </option>
+                    <option key={index} value={index}>Bug # {index +1} </option>
                 )
             })
             setSelectorState(mappedSelectors)
