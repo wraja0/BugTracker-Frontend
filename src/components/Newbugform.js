@@ -125,6 +125,9 @@ function Newbugform() {
                      >{user.username}</option>)
             })
             setAllUserData(allUsers)
+            console.log(allUserData[0].username)
+            setBugForm({...bugForm, devsAssigned: allUserData[0].username })
+            
         }
         getAllUserData();
         getPersonalUserData();

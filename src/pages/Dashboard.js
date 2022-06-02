@@ -26,6 +26,7 @@ function Dashboard() {
       const userData = await res.json()
       // SET USER STATE TO USE DATA
       setUser(userData)
+      console.log(userData)
     }
     checkLogin()
   }, [])
