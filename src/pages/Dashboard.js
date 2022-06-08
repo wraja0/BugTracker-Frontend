@@ -9,7 +9,7 @@ import { Link } from "react-router-dom"
 function Dashboard() {
   // MAP PASSED STATE USING USELOCATION
   const location = useLocation();
-  const [tokenState, setTokenState]  = useState(location.state.token)
+  const tokenState =location.state.token
   const URL = location.state.URL
   // DEFINE STATE FOR USER DATA
   const [user, setUser] = useState({})
@@ -29,7 +29,7 @@ function Dashboard() {
       console.log(userData)
     }
     checkLogin()
-  }, [])
+  }, [tokenState.accessToken,URL])
   // AGGREGATE DATA TO BE PASSED 
   const data = {
     URL: URL,
@@ -41,12 +41,12 @@ function Dashboard() {
     return <Navigate to="/badlogin" state={user.errortype} />
   }
   // RENDER WHEN AN AUTHENTICATED USER IS A DEVELOPER
-  if (user.class == 'dev') {return (
-    <div class="dashboard">
+  if (user.class === 'dev') {return (
+    <div className="dashboard">
       <h1> {user.class} Dashboard</h1>
       <h2>Welcome {user.username}</h2>
       <nav>
-        <Link to="queue" state={data}> Bug Queue </Link>
+        <Link to="viewallbugs" state={data}> Bug Queue </Link>
         <Link to ="cleared" state={data}>Bugs Cleared</Link>
         <a href="/">  Sign Out</a>
       </nav>
@@ -54,8 +54,8 @@ function Dashboard() {
     </div>
   )}
   // RENDER WHEN AN AUTHENTICATED USER IS A MANAGER
-  if (user.class == 'manager') {return (
-    <div class="dashboard">
+  if (user.class === 'manager') {return (
+    <div className="dashboard">
       <h1>Dashboard</h1>
       <h2>Welcome {user.username}</h2>
       <nav>

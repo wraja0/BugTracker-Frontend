@@ -4,7 +4,7 @@ import "../styles/App.css"
 // IMPORT HOOKS
 import { useState } from "react"
 // IMPORT ROUTER HOOKS
-import { Navigate, Outlet} from "react-router"
+import { Navigate} from "react-router"
 import {Link} from 'react-router-dom'
 function Login(props) {
     // SET BACKEND API ADDRESS

@@ -1,6 +1,6 @@
 // Module imports
 import React from  "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Page IMPORTS
 import Register from './pages/Register'
 import Login from './pages/login'
@@ -8,7 +8,6 @@ import Dashboard from './pages/Dashboard'
 import Badlogin from './pages/Badlogin'
 // COMPONENT IMPORTS
 import Cleared from "./components/Cleared";
-import Userqueue from "./components/Userqueue";
 import BugsAll from "./components/BugsAll";
 import Newbugform from "./components/Newbugform";
 import Bugview from './components/Bugview'
@@ -24,12 +23,10 @@ function App() {
         <Route path="/register" element={<Register URL={URL} />}/>
         {/* DASHBOARD ROUTE */}
         <Route path ="/home" element={<Dashboard />} >
-          <Route path="queue" element={<Userqueue />} >
           <Route path="bugview" element={<Bugview />} />
-          </Route>
           <Route path="cleared" element={<Cleared />} />
           <Route path="viewallbugs" element={<BugsAll />} >
-            <Route path="bugview/:index" element={<Bugview />} />
+            <Route path="bugview/" element={<Bugview />} />
           </Route>
           <Route path="assignbug" element={<Newbugform />} />
         </Route>

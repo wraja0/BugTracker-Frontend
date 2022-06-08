@@ -1,6 +1,4 @@
-import userEvent from "@testing-library/user-event";
 import { useEffect, useState } from "react";
-import { useInRouterContext } from "react-router"
 function Bugview(props) {
     const token = props.token
     const URL = props.URL
@@ -39,7 +37,7 @@ function Bugview(props) {
         }
         loginUser();
         fetchBug(bug);
-    },[])
+    },[URL,bug, token.accessToken])
     const mappedTests = testArr.map((data,index)=>{
         if (user.class === 'dev') {
             return (<div key={index}>
@@ -56,12 +54,13 @@ function Bugview(props) {
     const handleChange = (event)=> {
         setBugState(event.target.value)
     }
+    
+
     console.log(mappedTests)
     return (
         <div>
             <textarea
             onChange={handleChange}
-            ON
             value={bugState} />
             {mappedTests}
             <p>Assigned Users : {}</p>
