@@ -2,12 +2,14 @@
 import "../styles/App.css"
 // Import Hooks
 import { useState } from "react";
+import { Navigate } from "react-router";
+
 
 function Register(props) {
   // Set backend API Address 
   const URL = props.URL
   // Set States
-  const [user, setUser] = useState("")
+  const [redirectState, setRedirectState] = useState("")
   const [registerForm, setRegisterForm] = useState({
     username: "",
     password:"",
@@ -34,9 +36,10 @@ function Register(props) {
         "Authorization": `Bearer ${token.accessToken}`
         }
       });
-      const userData = await res2.json()
-      setUser(userData)
-      console.log(user)
+      const redirectState = await res2.json()
+      if (redirectState.redirect === true) {
+        setRedirectState(true)
+      }
   }
   const handleChange = (event,)=> {
     setRegisterForm({...registerForm, [event.target.name]: event.target.value })
@@ -51,39 +54,47 @@ function Register(props) {
         class: ""
     })
   }
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-                <input
-                name="username"
-                type="text"
-                value={registerForm.username}
-                placeholder="username"
-                onChange={handleChange}
-                />
-                <input
-                name="password"
-                type="text"
-                value={registerForm.password}
-                placeholder="password"
-                onChange={handleChange}
-                />
-                <select
-                name="class"
-                value={registerForm.class}
-                onChange={handleChange} 
-                >
-                  <option value="dev" >Dev Class</option>
-                  <option value="manager">Manager Class</option>
-                  <option value="guest">Guest</option>
-                </select>
-                <input onSubmit={handleSubmit}
-                  type="submit"
-                  value="Resister"
-                />
-            </form>
-    </div>
-  );
+  if (redirectState === true) {
+    return (
+    <Navigate to={'/'} />
+    )
+  }
+  else {
+    return (
+      <div>
+        <form onSubmit={handleSubmit}>
+                  <input
+                  name="username"
+                  type="text"
+                  value={registerForm.username}
+                  placeholder="username"
+                  onChange={handleChange}
+                  />
+                  <input
+                  name="password"
+                  type="text"
+                  value={registerForm.password}
+                  placeholder="password"
+                  onChange={handleChange}
+                  />
+                  <select
+                  name="class"
+                  value={registerForm.class}
+                  onChange={handleChange} 
+                  >
+                    <option value="dev" >Dev Class</option>
+                    <option value="manager">Manager Class</option>
+                    <option value="guest">Guest</option>
+                  </select>
+                  <input onSubmit={handleSubmit}
+                    type="submit"
+                    value="Resister"
+                  />
+              </form>
+              <a href="/"> LOGIN</a>
+      </div>
+    );
+    }
 }
 
 export default Register;

@@ -4,7 +4,8 @@ import "../styles/App.css"
 // IMPORT HOOKS
 import { useState } from "react"
 // IMPORT ROUTER HOOKS
-import { Navigate} from "react-router"
+import { Navigate, Outlet} from "react-router"
+import {Link} from 'react-router-dom'
 function Login(props) {
     // SET BACKEND API ADDRESS
     const URL = props.URL
@@ -66,7 +67,11 @@ function Login(props) {
                 <input onSubmit={handleSubmit}
         type="submit" value="Submit Login" />
             </form>
+            <nav>
+                <Link to='Register'>Register</Link>
+            </nav>
         </div>
+
     )
     // REDIRECT FOR WHEN AN ACCESS TOKEN HAS BEEN GENERATED 
     else return <Navigate to={'/home'} state={{URL:URL,token:tokenState}} />

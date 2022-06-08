@@ -37,6 +37,7 @@ function Dashboard() {
   } 
   // REDIRECT TO HANDLE INVALID LOGINS
   if (user.invalidLogin) {
+    console.log(user)
     return <Navigate to="/badlogin" state={user.errortype} />
   }
   // RENDER WHEN AN AUTHENTICATED USER IS A DEVELOPER
@@ -47,6 +48,7 @@ function Dashboard() {
       <nav>
         <Link to="queue" state={data}> Bug Queue </Link>
         <Link to ="cleared" state={data}>Bugs Cleared</Link>
+        <a href="/">  Sign Out</a>
       </nav>
       <Outlet />
     </div>
@@ -59,6 +61,7 @@ function Dashboard() {
       <nav>
         <Link to="assignbug" state={data}> Assign a New Bug </Link>
         <Link to ="viewallbugs" state={data}>View all Bugs</Link>
+        <a href="/">  Sign Out</a>
       </nav>
       <Outlet />
     </div>
